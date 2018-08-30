@@ -1,7 +1,7 @@
-                    The Musical Analyser 
-Copyright (C) 2017  Luka's`' Ondra'c`'ek <ondracek.lukas@gmail.com>
-                    http://ondracek-lukas.hys.cz/musa
-                    http://github.com/ondracek-lukas/musa
+                    The Pitch Recognizer 
+Copyright (C) 2018  Luka's`' Ondra'c`'ek <ondracek.lukas@gmail.com>
+                    http://github.com/ondracek-lukas/pitch-recognizer
+                    http://ondracek-lukas.hys.cz/
 
 This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License version 3

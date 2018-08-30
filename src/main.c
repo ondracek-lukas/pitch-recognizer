@@ -1,8 +1,6 @@
-// MusA  Copyright (C) 2016--2017  Lukáš Ondráček <ondracek.lukas@gmail.com>, see README file
+// Pitch Recognizer   Copyright (C) 2018        Lukáš Ondráček <ondracek.lukas@gmail.com>, use under GNU GPLv3, see README file
 
 #define _GNU_SOURCE
-#include <GL/freeglut.h>
-#include <GL/gl.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -12,15 +10,20 @@
 #include <unistd.h>
 
 #include "player.h"
-#include "drawer.h"
-#include "hid.h"
 #include "messages.h"
 #include "commandParser.h"
 #include "resources.gen.h"
 
 
 void mainExit() {
-	glutLeaveMainLoop();
+	printf("Requested exit\n");
+	exit(0);
+}
+void mainPrintErr(char *msg) {
+	fprintf(stderr, "%s\n", msg);
+}
+void mainPrint(char *msg) {
+	printf("%s\n", msg);
 }
 
 int main(int argc, char **argv){
@@ -28,7 +31,7 @@ int main(int argc, char **argv){
 	bool printHelp    = false;
 	bool printReadme  = false;
 	bool printCopying = false;
-	bool openDevice   = false;
+	bool openDevice   = true;
 	double deviceFreq = 0;
 	char *filename    = NULL;
 
@@ -109,27 +112,27 @@ int main(int argc, char **argv){
 	}
 
 
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB|GLUT_DOUBLE);
-	glutInitWindowSize(1024, 768);
-	glutCreateWindow("MusA");
-
-	drawerInit();
-	hidInit();
-
 	if (filename) {
 		msgSend_open(filename);
-	} else if (openDevice) {
+	} else {
 		if (deviceFreq) {
 			playerOpenDevice(deviceFreq);
 		} else {
 			playerOpenDeviceDefault();
 		}
-	} else {
-		playerOpenLogo();
 	}
 
-	glutMainLoop();
+	while ((c = getchar()) != EOF) {
+		if (c == 10) {
+			if (playerPlaying) {
+				playerPause();
+			} else {
+				playerPlay();
+			}
+		}
+	}
+
+	printf("Normal exit\n");
 	return 0;
 }
 

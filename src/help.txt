@@ -1,7 +1,7 @@
-The Musical Analyser 
-Copyright (C) 2017  Lukáš Ondráček <ondracek.lukas@gmail.com>
-                    http://ondracek-lukas.hys.cz/musa
-                    http://github.com/ondracek-lukas/musa
+The Pitch Recognizer 
+Copyright (C) 2018  Lukáš Ondráček <ondracek.lukas@gmail.com>
+                    http://github.com/ondracek-lukas/pitch-recognizer
+                    http://ondracek-lukas.hys.cz/
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 3
@@ -15,15 +15,13 @@ This program comes with ABSOLUTELY NO WARRANTY.
 For details and help consult the README file.
 
 Usage:
-  musa -h | -?  ...prints this help
-  musa -r       ...prints README
-  musa -c       ...prints COPYING
-  musa [OPTIONS] [ FILENAME | -d[FREQUENCY] ]
+  pitch_recognizer -h | -?  ...prints this help
+  pitch_recognizer -r       ...prints README
+  pitch_recognizer -c       ...prints COPYING
+  pitch_recognizer [OPTIONS] [ FILENAME | -d[FREQUENCY] ]
     ...runs the application opening given file
        or input device (with specified frequency or not).
   OPTIONS are
     --OPTION       ...activates boolean OPTION
     --noOPTION     ...deactivates boolean OPTION
     --OPTION=VALUE ...sets non-boolean OPTION to VALUE
-  The list of options can be found in the README file,
-  they can be also changed using :set command in the application.

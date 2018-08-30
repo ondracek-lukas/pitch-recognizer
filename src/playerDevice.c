@@ -1,10 +1,10 @@
-// MusA  Copyright (C) 2016--2017  Lukáš Ondráček <ondracek.lukas@gmail.com>, see README file
+// Pitch Recognizer   Copyright (C) 2018        Lukáš Ondráček <ondracek.lukas@gmail.com>, use under GNU GPLv3, see README file
+// MusA               Copyright (C) 2016--2018  Lukáš Ondráček <ondracek.lukas@gmail.com>
 
 #include "player.h"
 #include "playerDevice.h"
 #include "util.h"
 #include "taskManager.h"
-#include "consoleOut.h"
 #include "messages.h"
 #include "streamBuffer.h"
 
@@ -56,7 +56,7 @@ static int paInputStreamCallback(
 
 
 
-#define ERR(...) {consolePrintErrMsg(__VA_ARGS__); playerDeviceClose(); return false; }
+#define ERR(...) {fprintf(stderr,__VA_ARGS__); playerDeviceClose(); return false; }
 bool playerDeviceOutputOpen() {
 	{
 		PaError err = Pa_OpenDefaultStream( &paStream,

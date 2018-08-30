@@ -1,4 +1,5 @@
-// MusA  Copyright (C) 2016  Lukáš Ondráček <ondracek.lukas@gmail.com>, see README file
+// Pitch Recognizer   Copyright (C) 2018        Lukáš Ondráček <ondracek.lukas@gmail.com>, use under GNU GPLv3, see README file
+// MusA               Copyright (C) 2016--2018  Lukáš Ondráček <ondracek.lukas@gmail.com>
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -16,7 +17,6 @@ double playerDuration;
 double playerSampleRate;
 enum playerSourceType {
 	PLAYER_SOURCE_NONE = 0,
-	PLAYER_SOURCE_LOGO,
 	PLAYER_SOURCE_FILE,
 	PLAYER_SOURCE_DEVICE
 } playerSourceType;

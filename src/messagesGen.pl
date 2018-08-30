@@ -1,5 +1,6 @@
 #!/usr/bin/perl
-# MusA  Copyright (C) 2016--2017  Lukáš Ondráček <ondracek.lukas@gmail.com>, see README file
+# Pitch Recognizer  Copyright (C) 2018        Lukáš Ondráček <ondracek.lukas@gmail.com>, use under GNU GPL3, see README file
+# MusA              Copyright (C) 2016--2017  Lukáš Ondráček <ondracek.lukas@gmail.com>
 
 # This script generates src/messagesList.gen.h and src/messagesList.gen.c from src/messagesList.pl.
 

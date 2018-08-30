@@ -1,5 +1,5 @@
-// MusA  Copyright (C) 2016--2017  Lukáš Ondráček <ondracek.lukas@gmail.com>, see README file
-
+// Pitch Recognizer   Copyright (C) 2018        Lukáš Ondráček <ondracek.lukas@gmail.com>, use under GNU GPLv3, see README file
+// MusA               Copyright (C) 2016--2018  Lukáš Ondráček <ondracek.lukas@gmail.com>
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -12,9 +12,9 @@
 
 #include "messages.h"
 #include "taskManager.h"
-#include "consoleOut.h"
 #include "util.h"
 #include "mem.h"
+#include "main.h"
 
 #define MIN_AFTER_POS  (PLAYER_BUFFER_SIZE/2)
 #define MAX_AFTER_POS  (PLAYER_BUFFER_SIZE*3/4)
@@ -53,7 +53,7 @@ static __attribute__((destructor)) void fin() {
 	pthread_join(thread, NULL);
 }
 
-#define ERR(...) {consolePrintErrMsg(__VA_ARGS__); playerFileClose(); return false; }
+#define ERR(...) {fprintf(stderr,__VA_ARGS__); playerFileClose(); return false; }
 static bool fileOpen();
 
 bool playerFileOpen(char *filename) {
@@ -226,7 +226,7 @@ static bool taskFunc() {
 }
 
 
-#define ERR(...) {consolePrintErrMsg(__VA_ARGS__); playerFileTask.active = false; playerFileThreadTask.active=false; msgSend_close(); tmTaskLeave(&playerFileThreadTask); continue; }
+#define ERR(...) {fprintf(stderr,__VA_ARGS__); playerFileTask.active = false; playerFileThreadTask.active=false; msgSend_close(); tmTaskLeave(&playerFileThreadTask); continue; }
 static void *avReader(void *none) {
 	AVFrame* frame = av_frame_alloc();
 	if (!frame) utilExitErr("Cannot allocate frame.");

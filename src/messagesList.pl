@@ -1,4 +1,5 @@
-# MusA  Copyright (C) 2016--2017  Lukáš Ondráček <ondracek.lukas@gmail.com>, see README file
+# Pitch Recognizer  Copyright (C) 2018        Lukáš Ondráček <ondracek.lukas@gmail.com>, use under GNU GPL3, see README file
+# MusA              Copyright (C) 2016--2017  Lukáš Ondráček <ondracek.lukas@gmail.com>
 
 # This file defines options and types of messages,
 # it will be processed by messagesGen.pl.
@@ -86,52 +87,39 @@
 
 # === DEFINITION OF OPTIONS AND TYPES ===
 
-modules => [qw( main drawer drawerScale drawerMusicVisualiser consoleOut player playerFile resampler consoleStatus )],
+modules => [qw( main player playerFile pitchRecognition )],
 
 messages => {
-	print => {
-		args    => [qw( string )],
-		pause   => [qw( drawerConsole )],
-		call    => [qw( consolePrint )],
-	},
 	printErr => {
 		args    => [qw( string )],
-		pause   => [qw( drawerConsole )],
-		call    => [qw( consolePrintErr )],
+		pause   => [qw( )],
+		call    => [qw( mainPrintErr )],
 	},
-	consoleClear => {
-		pause   => [qw( drawerConsole )],
-		call    => [qw( consoleClear )],
+	print => {
+		args    => [qw( string )],
+		pause   => [qw( )],
+		call    => [qw( mainPrint )],
 	},
 	newSource => {
-		pause      => [qw( consoleStatus drawerMain dmv rs )],
-		call       => [qw( drawerReset dmvReset dsResetTimeScale dsResetToneScale rsResetHard )],
-	},
-	drawerReset => {
-		pause      => [qw( drawerMain )],
-		call       => [qw( drawerReset )],
+		pause      => [qw( )],
+		call       => [qw( prNewSource )],
 	},
 	open => {
 		aliases    => [qw( open o )],
 		call       => [qw( playerOpen )],
 		args       => [qw( path )],
-		pause      => [qw( playerFile playerFileThread consoleStatus dmv rs )],
+		pause      => [qw( playerFile playerFileThread pr )],
 	},
 	openDevice => {
 		aliases    => [qw( opendevice )],
 		call       => [qw( playerOpenDevice )],
 		args       => [qw( double )],
-		pause      => [qw( playerFile playerFileThread consoleStatus dmv rs )],
+		pause      => [qw( playerFile playerFileThread pr )],
 	},
 	openDeviceDefault => {
 		aliases    => [qw( opendevice )],
 		call       => [qw( playerOpenDeviceDefault )],
-		pause      => [qw( playerFile playerFileThread consoleStatus dmv rs )],
-	},
-	close => {
-		aliases    => [qw( close c )],
-		call       => [qw( playerOpenLogo )],
-		pause      => [qw( playerFile playerFileThread consoleStatus dmv rs )],
+		pause      => [qw( playerFile playerFileThread pr )],
 	},
 	play => {
 		aliases    => [qw( play )],
@@ -155,153 +143,74 @@ messages => {
 		call       => [qw( playerSeekRel )],
 		pause      => [qw( playerFile playerFileThread )],
 	},
+	close => {
+		aliases    => [qw( close c )],
+		call       => [qw( mainExit )],
+		pause      => [qw( playerFile playerFileThread )],
+	},
 	quit => {
 		aliases => [qw( quit q )],
 		call => [qw( mainExit )],
 	},
 },
 
-options => {
-	columnLen => {
-		type       => "int",
-		pause      => [qw( drawerMain dmv )],
-		call       => [qw( dmvReset dsResetToneScale )],
-	},
+options => { # no options can be changed during the execution
 	a1Freq => {
 		type       => "double",
-		pause      => [qw( drawerMain dmv )],
-		call       => [qw( dmvReset dsResetToneScale )],
+		pause      => [qw( )],
+		call       => [qw( )],
 		aliases    => [qw( a1freq a1 )],
 		default    => 440,
 		validCond  => "arg0 > 0",
 		unit       => "Hz",
 	},
-	minFreq => {
-		type       => "double",
-		pause      => [qw( drawerMain dmv rs )],
-		call       => [qw( dmvReset dsResetToneScale rsResetSoft )],
-		aliases    => [qw( lowesttone lt )],
-		default    => 16,
-		validCond  => "(arg0 > 0) && (2*arg0 <= msgOption_maxFreq)",
-		unit       => "Hz",
-	},
-	maxFreq => {
-		type       => "double",
-		pause      => [qw( drawerMain dmv rs )],
-		call       => [qw( dmvReset dsResetToneScale rsResetSoft )],
-		aliases    => [qw( highesttone ht )],
-		default    => 22000,
-		validCond  => "arg0 >= 2*msgOption_minFreq",
-		unit       => "Hz",
-	},
 	outputRate => {
 		type       => "double",
-		pause      => [qw( drawerMain dmv rs )],
-		call       => [qw( dmvReset drawerReset dsResetTimeScale dsResetToneScale rsResetSoft )],
+		pause      => [qw( )],
+		call       => [qw( )],
 		aliases    => [qw( rate rt )],
-		default    => 100,
+		default    => 25,
 		validCond  => "(arg0 > 0) && (arg0 <= playerSampleRate)",
 		unit       => "Hz",
 	},
-	showGrid => {
-		type       => "bool",
-		aliases    => [qw( showgrid sg )],
-		default    => "true",
-		pause      => [qw( drawerMain dmv )],
-		call       => [qw( drawerReset )],
-	},
-	showCursor => {
-		type       => "bool",
-		aliases    => [qw( showcursor sc )],
-		default    => "true",
-	},
-	cursorPos => {
+	blockMs => {
 		type       => "double",
-		pause      => [qw( drawerMain dmv )],
-		call       => [qw( drawerReset )],
-		aliases    => [qw( cursorposition cursorpos cp )],
+		aliases    => [qw( blockms )],
+		default    => 100,
+		validCond  => "(arg0 > 0)",
+		unit       => "ms",
+	},
+	subblockMs => {
+		type       => "double",
+		aliases    => [qw( subblockms )],
 		default    => 50,
+		validCond  => "(arg0 > 0)",
+		unit       => "ms",
+	},
+	minQuality => {
+		type       => "double",
+		aliases    => [qw( minquality )],
+		default    => 60,
 		validCond  => "(arg0 >= 0) && (arg0 <= 100)",
 		unit       => "%",
 	},
-	forceCursorPos => {
+	onePerTone => {
 		type       => "bool",
-		pause      => [qw( drawerMain )],
-		call       => [qw( drawerReset )],
-		aliases    => [qw( forcecursorposition forcecursorpos fcp )],
+		aliases    => [qw( onepertone )],
 		default    => "false",
 	},
-	reverseDirection => {
-		type       => "bool",
-		aliases    => [qw( reversedirection rd )],
-		pause      => [qw( drawerMain )],
-		call       => [qw( drawerReset )],
-	},
-	swapAxes => {
-		type       => "bool",
-		aliases    => [qw( swapaxes sa )],
-		pause      => [qw( drawerMain )],
-		call       => [qw( drawerReset )],
-	},
-	filterOvertones => {
-		type       => "bool",
-		pause      => [qw( drawerMain dmv )],
-		call       => [qw( dmvReset dsResetToneScale )],
-		aliases    => [qw( filterovertones fo )],
-		default    => "false",
-	},
-	overtoneBlur    => {  # XXX  add boundaries
-		type       => "int",
-		call       => [qw( dmvReset dsResetToneScale )],
-		default    => 2,
-		unit       => "px",
-		pause      => [qw( drawerMain dmv )],
-		aliases    => [qw( overtoneblur ob )],
-	},
-	overtoneThreshold => { # XXX
-		type       => "float",
-		call       => [qw( dmvReset dsResetToneScale )],
-		default    => 900,
-		unit       => "%",
-		pause      => [qw( drawerMain dmv )],
-		aliases    => [qw( overtonethreshold ot )],
-	},
-	overtoneRatio => { # XXX
-		type       => "float",
-		call       => [qw( dmvReset dsResetToneScale )],
-		default    => 100,
-		unit       => "%",
-		pause      => [qw( drawerMain dmv )],
-		aliases    => [qw( overtoneratio or )],
-	},
-	overtoneAddition => { # XXX
-		type       => "float",
-		call       => [qw( dmvReset dsResetToneScale )],
-		default    => 0,
-		unit       => "%",
-		pause      => [qw( drawerMain dmv )],
-		aliases    => [qw( overtoneaddition oa )],
-	},
-	gain => {
+	minGap => {
 		type       => "double",
-		pause      => [qw( drawerMain dmv )],
-		call       => [qw( dmvReset dsResetToneScale )],
-		aliases    => [qw( gain g )],
-		unit       => "dB",
+		aliases    => [qw( mingap )],
+		default    => 180,
+		validCond  => "(arg0 >= 0)",
+		unit       => "ms",
 	},
-	dynamicGain => {
-		type       => "bool",
-		pause      => [qw( drawerMain dmv )],
-		call       => [qw( dmvReset dsResetToneScale )],
-		aliases    => [qw( dynamicgain dg )],
-	},
-	signalToNoise => {
+	maxGapQuality => {
 		type       => "double",
-		pause      => [qw( drawerMain dmv )],
-		call       => [qw( dmvReset dsResetToneScale )],
-		aliases    => [qw( signaltonoise stn )],
-		unit       => "dB",
-		validCond  => "arg0 > 0",
+		aliases    => [qw( maxgapquality )],
 		default    => 40,
+		validCond  => "(arg0 >= 0) && (arg0 <= 100)",
+		unit       => "%",
 	},
 }
